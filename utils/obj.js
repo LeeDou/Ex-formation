@@ -1,5 +1,9 @@
-import { each } from './array';
-import { isObject } from './proto';
+/**
+ * author likang@sensorsdata.cn
+ */
+
+import { each } from './arr';
+import { isObject, hasOwn } from './proto';
 
 // 浅复制
 export function extend(obj) {
@@ -19,7 +23,7 @@ export function extend2Lev(obj) {
     for (var prop in source) {
       if (source[prop] !== void 0 && source[prop] !== null) {
         if (isObject(source[prop]) && isObject(obj[prop])) {
-          _.extend(obj[prop], source[prop]);
+          extend(obj[prop], source[prop]);
         } else {
           obj[prop] = source[prop];
         }
@@ -27,4 +31,16 @@ export function extend2Lev(obj) {
     }
   });
   return obj;
+}
+
+export function isEmptyObject(obj) {
+  if (isObject(obj)) {
+    for (var key in obj) {
+      if (hasOwn.call(obj, key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
 }

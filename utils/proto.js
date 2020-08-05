@@ -1,4 +1,8 @@
-var _toString = Object.prototype.toString,
+/**
+ * author likang@sensorsdata.cn
+ */
+
+const _toString = Object.prototype.toString,
   _hasOwnProperty = Object.prototype.hasOwnProperty,
   indexOf = Array.prototype.indexOf,
   slice = Array.prototype.slice,
@@ -59,8 +63,20 @@ export function isPlainObject(obj) {
   return _toString.call(obj) === '[object Object]';
 }
 
-export function isArray() {
-  return nativeIsArray || toString.call(obj) === '[object Array]';
+export function isArray(obj) {
+  return _isArray || toString.call(obj) === '[object Array]';
+}
+
+export function isFuction(f) {
+  try {
+    return /^\s*\bfunction\b/.test(f);
+  } catch (x) {
+    return false;
+  }
+}
+
+export function isArguments(obj) {
+  return !!(obj && hasOwn.call(obj, 'callee'));
 }
 
 export function toString(val) {

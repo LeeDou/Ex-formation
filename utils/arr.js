@@ -1,4 +1,8 @@
-import { forEach, hasOwn } from './proto';
+/**
+ * author likang@sensorsdata.cn
+ */
+
+import { forEach, hasOwn, isArguments, indexOf } from './proto';
 
 export function each(obj, iterator, context) {
   if (obj == null) {
@@ -39,10 +43,6 @@ export function toArray(iterable) {
   return values(iterable);
 }
 
-export function isArguments(obj) {
-  return !!(obj && hasOwnProperty.call(obj, 'callee'));
-}
-
 export function values(obj) {
   var results = [];
   if (obj == null) {
@@ -54,18 +54,33 @@ export function values(obj) {
   return results;
 }
 
+// include 函数，如果对象包含属性，就返回空对象 {}
 export function include(obj, target) {
   var found = false;
   if (obj == null) {
     return found;
   }
-  if (nativeIndexOf && obj.indexOf === nativeIndexOf) {
+  if (indexOf && obj.indexOf === indexOf) {
     return obj.indexOf(target) != -1;
   }
   each(obj, function (value) {
     if (found || (found = value === target)) {
-      return breaker;
+      return {};
     }
   });
   return found;
+}
+
+export function unique(arr) {
+  var temp,
+    n = [],
+    o = {};
+  for (var i = 0; i < arr.length; i++) {
+    temp = arr[i];
+    if (!o[temp]) {
+      o[temp] = true;
+      n.push(temp);
+    }
+  }
+  return n;
 }
