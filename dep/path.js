@@ -2,6 +2,7 @@
  * author likang@sensorsdata.cn
  */
 import logger from 'logger';
+import { isObject } from './util';
 
 export function getPath(path) {
   if (typeof path === 'string') {
@@ -25,4 +26,17 @@ export function getCurrentPath() {
     logger.info(e);
   }
   return url;
+}
+
+export function getCurrentUrl(me) {
+  var path = getCurrentPath();
+  var query = '';
+  if (isObject(me) && me.sensors_mp_encode_url_query) {
+    query = me.sensors_mp_encode_url_query;
+  }
+  if (path) {
+    return query ? path + '?' + query : path;
+  } else {
+    return '未取到';
+  }
 }
