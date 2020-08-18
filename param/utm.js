@@ -1,7 +1,14 @@
 /**
  * author likang@sensorsdata.cn
  */
+import { extend } from '../utils'
 
+/**
+ * 
+ * @param  para 
+ * @param  prop 
+ * 在此函数内修改 prop 并不合理，将返回一个对象，调用函数返回
+ */
 export function setUtm(para, prop) {
   var utms = {};
   var query = _.getMixedQuery(para);
@@ -9,6 +16,6 @@ export function setUtm(para, prop) {
   var pre2 = _.getCustomUtmFromQuery(query, '$latest_', '_latest_', '$latest_');
   utms.pre1 = pre1;
   utms.pre2 = pre2;
-  _.extend(prop, pre1);
+  extend(prop, pre1);
   return utms;
 }

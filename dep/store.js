@@ -5,6 +5,9 @@
 import {} from '../utils';
 import logger from 'logger';
 
+/**
+ * setStorageSync
+ */
 export function setStorageSync(key, value) {
   var fn = function () {
     wx.setStorageSync(key, value);
@@ -21,7 +24,11 @@ export function setStorageSync(key, value) {
   }
 }
 
-_.getStorageSync = function (key) {
+/**
+ * 
+ * getStorageSync
+ */
+export function getStorageSync (key) {
   var store = '';
   try {
     store = wx.getStorageSync(key);

@@ -3,7 +3,15 @@
  * data check
  */
 
-import { isObject, isString, isArray, each } from '../utils';
+import {
+  isObject,
+  isString,
+  isNumber,
+  isDate,
+  isBoolean,
+  isArray,
+  each,
+} from '../utils';
 // 需单独引入 logger
 import logger from 'logger';
 
@@ -31,13 +39,7 @@ export function stripProperties(p) {
     }
     // 只能是字符串，数字，日期,布尔，数组
     if (
-      !(
-        _.isString(v) ||
-        _.isNumber(v) ||
-        _.isDate(v) ||
-        _.isBoolean(v) ||
-        _.isArray(v)
-      )
+      !(isString(v) || isNumber(v) || isDate(v) || isBoolean(v) || isArray(v))
     ) {
       logger.info('您的数据-', v, '-格式不满足要求，我们已经将其删除');
       delete p[k];
