@@ -4,9 +4,11 @@
  * 依赖于小程序的原生对象
  */
 
+import { proxyClick } from './utils';
+
 var oldApp = App;
 App = function (option) {
-  mp_proxy(option, 'onLaunch', 'appLaunch');
+  proxyClick(option, 'onLaunch', 'appLaunch');
   mp_proxy(option, 'onShow', 'appShow');
   mp_proxy(option, 'onHide', 'appHide');
   oldApp.apply(this, arguments);
