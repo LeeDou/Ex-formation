@@ -2,13 +2,14 @@
  * author likang@sensorsdata.cn
  */
 
+import { isObject } from '../utils';
 
-_.setShareInfo = function (para, prop) {
+export function setShareInfo(para, prop) {
   var share = {};
   var obj = {};
   var current_id = sa.store.getDistinctId();
   var current_first_id = sa.store.getFirstId();
-  if (para && _.isObject(para.query) && para.query.sampshare) {
+  if (para && isObject(para.query) && para.query.sampshare) {
     share = _.decodeURIComponent(para.query.sampshare);
     if (_.isJSONString(share)) {
       share = JSON.parse(share);
@@ -59,4 +60,4 @@ _.setShareInfo = function (para, prop) {
     prop.$share_url_path = '取值异常';
   }
   _.setLatestShare(obj);
-};
+}
