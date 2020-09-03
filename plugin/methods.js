@@ -13,14 +13,15 @@ import { isEmptyObject, extend } from '../utils';
  *
  * @param { onLaunch option} para
  * @param { whether immediate track } immediate
+ * @param { quick param } prop
  */
-export function appLaunch(para, immediate) {
+export function appLaunch(para, prop, immediate) {
   // 此处的 this 指针需确认
-  if (typeof this === 'object' && !this['trackCustom']) {
+  if (typeof this === 'object' && !this['trackCustom'] && !immediate) {
     this[sa.para.name] = sa;
   }
 
-  var prop = {};
+  var prop = prop || {};
   if (para && para.path) {
     prop.$url_path = getPath(para.path);
   }
@@ -46,21 +47,17 @@ export function appLaunch(para, immediate) {
   prop.$url_query = _.setQuery(para.query);
 
   if (immediate) {
-    prop = extend(prop, immediate);
     sa.track('$MPLaunch', prop);
   } else if (sa.para.autoTrack && sa.para.autoTrack.appLaunch) {
     sa.autoTrackCustom.trackCustom('appLaunch', prop, '$MPLaunch');
   }
 }
 
-export function appShow(para, immediate) {
+export function appShow(para, prop, immediate) {
   // 注意：不要去修改 para
-  var prop = {};
+  var prop = prop || {};
 
   mpshow_time = new Date().getTime();
-
-  // 给小程序弹窗传递小程序打开事件
-  sa.events.emit('appShow', para.query.scene);
 
   if (para && para.path) {
     prop.$url_path = _.getPath(para.path);
@@ -77,16 +74,15 @@ export function appShow(para, immediate) {
 
   prop.$url_query = _.setQuery(para.query);
   if (immediate) {
-    prop = extend(prop, immediate);
     sa.track('$MPShow', prop);
   } else if (sa.para.autoTrack && sa.para.autoTrack.appShow) {
     sa.autoTrackCustom.trackCustom('appShow', prop, '$MPShow');
   }
 }
 
-export function appHide(immediate) {
+export function appHide(prop, immediate) {
   var current_time = new Date().getTime();
-  var prop = {};
+  var prop = prop || {};
   prop.$url_path = _.getCurrentPath();
   if (
     mpshow_time &&
@@ -112,8 +108,8 @@ export function pageLoad(para) {
     this.sensors_mp_encode_url_query = _.setQuery(para, true);
   }
 }
-export function pageShow() {
-  var prop = {};
+export function pageShow(prop, immediate) {
+  var prop = prop || {};
   var router = _.getCurrentPath();
   prop.$referrer = sa_referrer;
   prop.$url_path = router;
@@ -121,15 +117,19 @@ export function pageShow() {
   prop.$url_query = this.sensors_mp_url_query ? this.sensors_mp_url_query : '';
   prop = extend(prop, _.getUtmFromPage());
 
-  if (sa.para.onshow) {
-    sa.para.onshow(sa, router, this);
+  // para.onshow 此方方法在哪个版本上线，不做兼容
+  // if (sa.para.onshow) {
+  //   sa.para.onshow(sa, router, this);
+  // } else
+  if (immediate) {
+    sa.track('$MPViewScreen', prop);
   } else if (sa.para.autoTrack && sa.para.autoTrack.pageShow) {
     sa.autoTrackCustom.trackCustom('pageShow', prop, '$MPViewScreen');
   }
   sa_referrer = router;
   sa.status.referrer = router;
 }
-export function pageShare(option, immediate) {
+export function pageShare(option) {
   var oldMessage = option.onShareAppMessage;
 
   option.onShareAppMessage = function () {

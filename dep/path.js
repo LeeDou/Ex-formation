@@ -1,5 +1,6 @@
 /**
  * author likang@sensorsdata.cn
+ * 此模块会依赖于小程序原生的
  */
 import logger from 'logger';
 import { isObject } from './util';
