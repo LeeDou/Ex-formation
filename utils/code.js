@@ -8,7 +8,7 @@ import { isObject, isDate } from './proto';
 import { formatDate } from './date';
 
 /**
- * uri 解码
+ * uri 解码 函数名需要修改
  * @param {uri}} val
  */
 export function decodeURIComponent(val) {

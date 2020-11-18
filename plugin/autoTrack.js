@@ -4,6 +4,7 @@
  */
 
 import sa from 'sa';
+import { isEmptyObject } from '../utils/proto';
 
 /**
  * autoTrackCustom 方法需要重写，能实现绑定自定义的方法处理自定属性，传入自定义属性
@@ -11,7 +12,7 @@ import sa from 'sa';
  * quick 方法，默认跳过所有的控制检查，直接完成数据的发送，与自定义埋点区分开
  */
 
-export function autoTrackCustom(api, prop, event) {
+export function trackCustom(api, prop, event) {
   var temp = sa.para.autoTrack[api];
   var tempFunc = '';
   if (sa.para.autoTrack && temp) {
@@ -25,5 +26,24 @@ export function autoTrackCustom(api, prop, event) {
       sa.para.autoTrack[api] = true;
     }
     sa.track(event, prop);
+  }
+}
+
+export function quick(event, option, prop) {
+  var obj = {};
+  if (!!prop) {
+    if (typeof prop === 'function') {
+      temp = prop();
+      if (isObject(temp)) {
+        extend(obj, temp);
+      }
+    } else if (isObject(prop)) {
+      extend(obj, prop);
+    }
+  }
+  if (!isEmptyObject(obj)) {
+    sa[event](option, obj);
+  } else {
+    sa[event](option, true);
   }
 }

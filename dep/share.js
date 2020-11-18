@@ -2,16 +2,19 @@
  * author likang@sensorsdata.cn
  */
 
-import { isObject } from '../utils';
+import { isObject, decodeURIComponent, isJSONString } from '../utils';
+import store from './store';
 
-export function setShareInfo(para, prop) {
+export function getShareInfo(para) {
   var share = {};
   var obj = {};
-  var current_id = sa.store.getDistinctId();
-  var current_first_id = sa.store.getFirstId();
+  var prop = {};
+  var info = {};
+  var current_id = store.getDistinctId();
+  var current_first_id = store.getFirstId();
   if (para && isObject(para.query) && para.query.sampshare) {
-    share = _.decodeURIComponent(para.query.sampshare);
-    if (_.isJSONString(share)) {
+    share = decodeURIComponent(para.query.sampshare);
+    if (isJSONString(share)) {
       share = JSON.parse(share);
     } else {
       return {};
@@ -59,5 +62,22 @@ export function setShareInfo(para, prop) {
   } else {
     prop.$share_url_path = '取值异常';
   }
-  _.setLatestShare(obj);
+  info.obj = obj;
+  info.prop = prop;
+  return info;
+}
+
+export function setLatestShare(share) {
+  if (
+    share.$latest_share_depth ||
+    share.$latest_share_distinct_id ||
+    share.$latest_share_url_path
+  ) {
+    sa.clearAppRegister(latest_share_info);
+    sa.clearAllProps(latest_share_info);
+
+    sa.para.is_persistent_save.share
+      ? sa.register(share)
+      : sa.registerApp(share);
+  }
 }

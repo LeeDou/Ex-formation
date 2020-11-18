@@ -6,7 +6,17 @@
 // setOnceProfile 需要在全局 API 定义
 
 import sa from 'sa';
-import { setShareInfo, getPath } from '../dep';
+import {
+  getShareInfo,
+  getPath,
+  getCurrentPath,
+  getCurrentUrl,
+  setLatestShare,
+  setLatestChannel,
+  getScene,
+  getUtm,
+  getUtmFromPage,
+} from '../dep';
 import { isEmptyObject, extend } from '../utils';
 
 /**
@@ -15,7 +25,7 @@ import { isEmptyObject, extend } from '../utils';
  * @param { whether immediate track } immediate
  * @param { quick param } prop
  */
-export function appLaunch(para, prop, immediate) {
+export function appLaunch(para, immediate, prop) {
   // 此处的 this 指针需确认
   if (typeof this === 'object' && !this['trackCustom'] && !immediate) {
     this[sa.para.name] = sa;
@@ -27,9 +37,14 @@ export function appLaunch(para, prop, immediate) {
   }
 
   // 设置分享的信息
-  setShareInfo(para, prop);
+  getShareInfo(para);
+  var info = getShareInfo(para);
+  prop = extend(prop, info.prop);
+  setLatestShare(info.obj);
   // 设置utm的信息
-  var utms = _.setUtm(para, prop);
+  // setUtm 修改为 getUtm
+  var utms = getUtm(para, prop);
+  prop = extend(prop, utms.pre1);
   if (is_first_launch) {
     prop.$is_first_time = true;
     if (!isEmptyObject(utms.pre1)) {
@@ -39,12 +54,12 @@ export function appLaunch(para, prop, immediate) {
     prop.$is_first_time = false;
   }
 
-  _.setLatestChannel(utms.pre2);
+  setLatestChannel(utms.pre2);
 
-  prop.$scene = _.getMPScene(para.scene);
+  prop.$scene = getScene(para.scene);
   sa.registerApp({ $latest_scene: prop.$scene });
 
-  prop.$url_query = _.setQuery(para.query);
+  prop.$url_query = getQueryUrl(para.query);
 
   if (immediate) {
     sa.track('$MPLaunch', prop);
@@ -60,19 +75,20 @@ export function appShow(para, prop, immediate) {
   mpshow_time = new Date().getTime();
 
   if (para && para.path) {
-    prop.$url_path = _.getPath(para.path);
+    prop.$url_path = getPath(para.path);
   }
   // 设置分享的信息
   setShareInfo(para, prop);
 
-  var utms = _.setUtm(para, prop);
+  var utms = getUtm(para, prop);
+  prop = extend(prop, utms.pre1);
 
-  _.setLatestChannel(utms.pre2);
+  setLatestChannel(utms.pre2);
 
-  prop.$scene = _.getMPScene(para.scene);
+  prop.$scene = getScene(para.scene);
   sa.registerApp({ $latest_scene: prop.$scene });
 
-  prop.$url_query = _.setQuery(para.query);
+  prop.$url_query = getQueryUrl(para.query);
   if (immediate) {
     sa.track('$MPShow', prop);
   } else if (sa.para.autoTrack && sa.para.autoTrack.appShow) {
@@ -83,7 +99,7 @@ export function appShow(para, prop, immediate) {
 export function appHide(prop, immediate) {
   var current_time = new Date().getTime();
   var prop = prop || {};
-  prop.$url_path = _.getCurrentPath();
+  prop.$url_path = getCurrentPath();
   if (
     mpshow_time &&
     current_time - mpshow_time > 0 &&
@@ -91,7 +107,7 @@ export function appHide(prop, immediate) {
   ) {
     prop.event_duration = (current_time - mpshow_time) / 1000;
   }
-  if (not_use_auto_track) {
+  if (immediate) {
     prop = extend(prop, not_use_auto_track);
     sa.track('$MPHide', prop);
   } else if (sa.para.autoTrack && sa.para.autoTrack.appHide) {
@@ -110,12 +126,12 @@ export function pageLoad(para) {
 }
 export function pageShow(prop, immediate) {
   var prop = prop || {};
-  var router = _.getCurrentPath();
+  var router = getCurrentPath();
   prop.$referrer = sa_referrer;
   prop.$url_path = router;
   sa.status.last_referrer = sa_referrer;
   prop.$url_query = this.sensors_mp_url_query ? this.sensors_mp_url_query : '';
-  prop = extend(prop, _.getUtmFromPage());
+  prop = extend(prop, getUtmFromPage());
 
   // para.onshow 此方方法在哪个版本上线，不做兼容
   // if (sa.para.onshow) {
@@ -139,7 +155,7 @@ export function pageShare(option) {
       sa.autoTrackCustom.trackCustom(
         'pageShare',
         {
-          $url_path: _.getCurrentPath(),
+          $url_path: getCurrentPath(),
           $share_depth: query_share_depth,
         },
         '$MPShare'
@@ -149,13 +165,13 @@ export function pageShare(option) {
     if (sa.para.allow_amend_share_path) {
       if (typeof oldValue !== 'object') {
         oldValue = {};
-        oldValue.path = _.getCurrentUrl(this);
+        oldValue.path = getCurrentUrl(this);
       }
       if (
         typeof oldValue === 'object' &&
         (typeof oldValue.path === 'undefined' || oldValue.path === '')
       ) {
-        oldValue.path = _.getCurrentUrl(this);
+        oldValue.path = getCurrentUrl(this);
       }
       if (typeof oldValue === 'object' && typeof oldValue.path === 'string') {
         if (oldValue.path.indexOf('?') === -1) {
@@ -168,7 +184,7 @@ export function pageShare(option) {
       }
 
       oldValue.path =
-        oldValue.path + 'sampshare=' + encodeURIComponent(_.getShareInfo());
+        oldValue.path + 'sampshare=' + encodeURIComponent(getShareInfo());
     }
     return oldValue;
   };
