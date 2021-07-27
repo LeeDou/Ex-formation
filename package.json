@@ -1,0 +1,22 @@
+{
+  "name": "ex-information",
+  "version": "1.0.0",
+  "description": "### 模块划分",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeeDou/Ex-information.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeeDou/Ex-information/issues"
+  },
+  "homepage": "https://github.com/LeeDou/Ex-information#readme",
+  "dependencies": {
+    "rollup-plugin-virtual": "^1.0.1"
+  }
+}

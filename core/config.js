@@ -1,3 +1,0 @@
-/**
- * author likang@sensorsdata.cn
- */

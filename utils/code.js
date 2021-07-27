@@ -1,16 +1,7 @@
-/**
- * author likang@sensorsdata.cn
- * code 编码模块
- */
-
 import { each } from './arr';
 import { isObject, isDate } from './proto';
 import { formatDate } from './date';
 
-/**
- * uri 解码 函数名需要修改
- * @param {uri}} val
- */
 export function decodeURIComponent(val) {
   var result = '';
   try {
@@ -24,10 +15,9 @@ export function decodeURIComponent(val) {
 export function encodeDates(obj) {
   each(obj, function (v, k) {
     if (isDate(v)) {
-      obj[k] = _.formatDate(v);
+      obj[k] = formatDate(v);
     } else if (isObject(v)) {
       obj[k] = encodeDates(v);
-      // recurse
     }
   });
   return obj;

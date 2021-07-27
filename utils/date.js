@@ -1,7 +1,3 @@
-/**
- * author likang@sensorsdata.cn
- */
-
 import { isObject, isDate } from './proto';
 import { each } from './arr';
 
@@ -25,17 +21,6 @@ export function formatDate(d) {
     '.' +
     pad(d.getMilliseconds())
   );
-}
-
-export function encodeDates(obj) {
-  each(obj, function (v, k) {
-    if (isDate(v)) {
-      obj[k] = formatDate(v);
-    } else if (isObject(v)) {
-      obj[k] = encodeDates(v);
-    }
-  });
-  return obj;
 }
 
 export function searchObjDate(o) {

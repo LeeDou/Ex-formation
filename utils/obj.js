@@ -1,9 +1,5 @@
-/**
- * author likang@sensorsdata.cn
- */
-
 import { each } from './arr';
-import { isObject, hasOwn } from './proto';
+import { isObject, hasOwn, slice } from './proto';
 
 // 浅复制
 export function extend(obj) {

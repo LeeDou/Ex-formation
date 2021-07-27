@@ -3,14 +3,13 @@
  * page proxy module
  */
 
-import sa from 'sa';
+import ex from 'ex';
 import { clickProxy, mpProxy, screenMethods } from '../utils';
 
 var oldPage = Page;
 export function Page(option) {
   // 先判断 mpClick 是否配置自动采集，若配置为真则获取自定义方法并代理重写
-  var methods =
-    sa.para.autoTrack && sa.para.autoTrack.mpClick && screenMethods(option);
+  var methods = ex.para.autoTrack && ex.para.autoTrack.mpClick && screenMethods(option);
 
   if (!!methods) {
     for (var i = 0, len = methods.length; i < len; i++) {
@@ -20,8 +19,8 @@ export function Page(option) {
 
   mpProxy(option, 'onLoad', 'pageLoad');
   mpProxy(option, 'onShow', 'pageShow');
-  if (typeof option.onShareAppMessage === 'function') {
-    sa.autoTrackCustom.pageShare(option);
+  if (typeof option.onShareAppMesexge === 'function') {
+    ex.autoTrackCustom.pageShare(option);
   }
   oldPage.apply(this, arguments);
 }

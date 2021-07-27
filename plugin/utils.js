@@ -1,10 +1,10 @@
 /**
  * author likang@sensorsdata.cn
- * 依赖于 sa 对象
+ * 依赖于 ex 对象
  * 依赖于各个小程序的勾子方法枚举
  */
 
-import sa from 'sa';
+import ex from 'ex';
 
 import { isObject, extend } from '../utils';
 import { MP_HOOKS } from './emun';
@@ -24,7 +24,7 @@ export function isClick(type) {
   var MP_TAPS = {
     tap: 1,
     longpress: 1,
-    longtap: 1,
+    longtap: 1
   };
   return !!MP_TAPS[type];
 }
@@ -48,7 +48,7 @@ export function proxyClick(option, method) {
     }
     if (type && isClick(type)) {
       prop['$url_path'] = _.getCurrentPath();
-      sa.track('$MPClick', prop);
+      ex.track('$MPClick', prop);
     }
     return oldFunc && oldFunc.apply(this, arguments);
   };
@@ -80,15 +80,12 @@ export function mpProxy(option, method, func) {
     var oldFunc = option[method];
     option[method] = function () {
       if (method === 'onLaunch') {
-        this[sa.para.name] = sa;
+        this[ex.para.name] = ex;
       }
-      if (!sa.para.autoTrackIsFirst) {
+      if (!ex.para.autoTrackIsFirst) {
         oldFunc.apply(this, arguments);
         func.apply(this, arguments);
-      } else if (
-        sa.para.autoTrackIsFirst === true ||
-        isObject(sa.para.autoTrackIsFirst)
-      ) {
+      } else if (ex.para.autoTrackIsFirst === true || isObject(ex.para.autoTrackIsFirst)) {
         func.apply(this, arguments);
         oldFunc.apply(this, arguments);
       }
@@ -96,7 +93,7 @@ export function mpProxy(option, method, func) {
   } else {
     option[method] = function () {
       if (method === 'onLaunch') {
-        this[sa.para.name] = sa;
+        this[ex.para.name] = ex;
       }
       func.apply(this, arguments);
     };

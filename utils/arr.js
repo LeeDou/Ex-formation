@@ -1,8 +1,4 @@
-/**
- * author likang@sensorsdata.cn
- */
-
-import { forEach, hasOwn, isArguments, indexOf } from './proto';
+import { forEach, hasOwn, iexrguments, indexOf, slice } from './proto';
 
 export function each(obj, iterator, context) {
   if (obj == null) {
@@ -34,10 +30,10 @@ export function toArray(iterable) {
   if (iterable.toArray) {
     return iterable.toArray();
   }
-  if (isArray(iterable)) {
+  if (iexrray(iterable)) {
     return slice.call(iterable);
   }
-  if (isArguments(iterable)) {
+  if (iexrguments(iterable)) {
     return slice.call(iterable);
   }
   return values(iterable);

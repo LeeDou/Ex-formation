@@ -1,16 +1,10 @@
-/**
- * author likang@sensorsdata.cn
- */
-
-// 需要单独引入 sa 及 logger
-import sa from 'sa';
-import logger from 'logger';
-
-// 依赖于 sa 的配置参数
+import ex from '../core/instance';
+import { isObject } from './proto';
+import { each } from './arr';
 export function formatString(str) {
-  if (str.length > sa.para.max_string_length) {
-    logger.info('字符串长度超过限制，已经做截取--' + str);
-    return str.slice(0, sa.para.max_string_length);
+  if (str.length > ex.para.max_string_length) {
+    ex.log('字符串长度超过限制，已经做截取--' + str);
+    return str.slice(0, ex.para.max_string_length);
   } else {
     return str;
   }

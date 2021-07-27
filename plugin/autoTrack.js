@@ -3,7 +3,7 @@
  * autotrack module
  */
 
-import sa from 'sa';
+import ex from 'ex';
 import { isEmptyObject } from '../utils/proto';
 
 /**
@@ -13,9 +13,9 @@ import { isEmptyObject } from '../utils/proto';
  */
 
 export function trackCustom(api, prop, event) {
-  var temp = sa.para.autoTrack[api];
+  var temp = ex.para.autoTrack[api];
   var tempFunc = '';
-  if (sa.para.autoTrack && temp) {
+  if (ex.para.autoTrack && temp) {
     if (typeof temp === 'function') {
       tempFunc = temp();
       if (isObject(tempFunc)) {
@@ -23,9 +23,9 @@ export function trackCustom(api, prop, event) {
       }
     } else if (isObject(temp)) {
       extend(prop, temp);
-      sa.para.autoTrack[api] = true;
+      ex.para.autoTrack[api] = true;
     }
-    sa.track(event, prop);
+    ex.track(event, prop);
   }
 }
 
@@ -42,8 +42,8 @@ export function quick(event, option, prop) {
     }
   }
   if (!isEmptyObject(obj)) {
-    sa[event](option, obj);
+    ex[event](option, obj);
   } else {
-    sa[event](option, true);
+    ex[event](option, true);
   }
 }
